@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 import {cn} from "@/lib/utils"
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import useProject from "@/hooks/use-project";
+import useRefetch from "@/hooks/use-refetch";
 
 const items = [
     {
@@ -33,22 +35,24 @@ const items = [
     }
 ]
 
-const projects = [
-    {
-        title: 'Project 1'
-    },
-    {
-        title: 'Project 2'
-    },
-    {
-        title: 'Project 3'
-    }
-]
+// const projects = [
+//     {
+//         title: 'Project 1'
+//     },
+//     {
+//         title: 'Project 2'
+//     },
+//     {
+//         title: 'Project 3'
+//     }
+// ]
 
 
 export function AppSideBar(){
     const pathname = usePathname()
     const { open } = useSidebar()
+    const {projects, projectId, setProjectId} = useProject()
+
     return (
         <Sidebar collapsible = "icon" variant = "floating">
             <SidebarHeader>
@@ -92,22 +96,24 @@ export function AppSideBar(){
                     </SidebarGroupLabel>
                     <SidebarContent>
                         <SidebarMenu>
-                            {projects.map(project =>{
+                            {projects?.map(project =>{
                                 return (
-                                    <SidebarMenuItem key={project.title}>
-                                        <SidebarMenuButton asChild>
-                                            <div>
+                                    <SidebarMenuItem key={project.name}>
+                                        <SidebarMenuButton asChild >
+                                            <div onClick={()=>{
+                                                setProjectId(project.id)
+                                            }}>
                                                 <div className={cn('rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-priamry', 
                                                 {
-                                                    'bg-primary text-white': false
-                                                    // 'bg-primary text-white': project.title === selectedProject?.title
+                                                    // 'bg-primary text-white': false
+                                                    'bg-primary text-white': project.id === projectId
                                                     // Toggle the icon color when managing the actual projects fetched from the database,
                                                 }
                                                 )}>
-                                                    {project.title.charAt(0)}
+                                                    {project.name.charAt(0)}
                                                     
                                                 </div>
-                                                <span>{project.title}</span>
+                                                <span>{project.name}</span>
                                                 
                                             </div>
                                         </SidebarMenuButton>
