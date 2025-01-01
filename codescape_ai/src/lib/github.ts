@@ -32,7 +32,6 @@ export const getCommitHashes = async(githubUrl: string): Promise<Response[]> => 
         owner,
         repo
     })
-    console.log(data)
 
     const sortedCommits = data.sort((a: any, b: any) => new Date(b.commit.author.date).getTime() - new Date(a.commit.author.date).getTime()) as any[]
 
@@ -46,26 +45,23 @@ export const getCommitHashes = async(githubUrl: string): Promise<Response[]> => 
         }))
 }
 
-// console.log(await getCommitHashes(githubUrl))
 
 export const pullCommits = async(projectId: string) => {
     const { project, githubUrl } = await fetchProjectGithubUrl(projectId)
 
     const commitHashes = await getCommitHashes(githubUrl)
     const unProcessedCommits = await filterUnprocessedCommits(projectId, commitHashes)
-    // console.log(unProcessedCommits)
     
     const summaryResponses = await Promise.allSettled(unProcessedCommits.map(commit => {
         return summariseCommit(githubUrl, commit.commitHash)
     }))
 
     const summaries = summaryResponses.map((response)=>{
-        // console.log("FROM GITHUB.TS", response)
-        console.log("FROM GITHUB.TS", response.status)
+
 
         if(response.status === 'fulfilled'){
             return response.value as string;
-        }
+        }   
         return "";
     })
     const commits = await db.commit.createMany({
