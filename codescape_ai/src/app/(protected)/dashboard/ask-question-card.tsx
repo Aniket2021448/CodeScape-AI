@@ -3,32 +3,45 @@ import { Textarea } from '@/components/ui/textarea'
 import useProject from '@/hooks/use-project'
 import React, { use } from 'react'
 import {Button} from '@/components/ui/button'
+import { Dialog, DialogHeader } from '@/components/ui/dialog'
+import { DialogContent, DialogTitle } from '@/components/ui/dialog'
+import Image from "next/image";
+
 
 const AskQuestionCard = () => {
     const {project} = useProject()
     const [question, setQuestion] = React.useState('')
+    const [open, setOpen] = React.useState(false)
 
-    const onSubmit = async(e: React.FormEvent) => {
+    const onSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        window.alert(question)
-
+        // window.alert(question)
+        setOpen(true)
         console.log('submitting question', question)
     }
 
-
     return (
-    //    <div>AskQuestionCard</div>
         <>
-            <Card>
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>
+                            <Image src='/logo.png' alt={"codescape-logo"} width={60} height={60}/>
+                        </DialogTitle>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+
+            <Card className='relative col-span-5'>
                 <CardHeader>
                     <CardTitle>Ask a Question</CardTitle>
                 </CardHeader>
 
                 <CardContent>
                     <form onSubmit={onSubmit}>
-                        <Textarea placeholder='Which file should i edit to change the home page' value={question} onChange={e => setQuestion(e.target.value)}/>
-                        <div className='h-4'>
-                            <Button>Ask Codescape!</Button>
+                        <Textarea className= 'p-5' placeholder='Which file should i edit to change the home page' value={question} onChange={e => setQuestion(e.target.value)}/>
+                        <div className='pt-5'>
+                            <Button type="submit" >Ask Codescape!</Button>
                         </div>
                     </form>
                 </CardContent>
